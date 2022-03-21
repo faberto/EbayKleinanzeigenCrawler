@@ -216,9 +216,18 @@ namespace EbayKleinanzeigenCrawler.Manager
             }
 
             subscriber.IncompleteSubscription = new Subscription { QueryUrl = url };
-            subscriber.State = InputState.WaitingForIncludeKeywords;
-            SendMessage(subscriber, "Ok. Enter keywords which must all be included in title or description. Separate by \",\" and define alternatives by \"|\". Or write '/skip'");
-            SendMessage(subscriber, "Example: 'one, two|three' will find results where 'one' and 'two' are words in the description; but it will also find results with 'one' and 'three'.");
+            /* subscriber.State = InputState.WaitingForIncludeKeywords;
+             SendMessage(subscriber, "Ok. Enter keywords which must all be included in title or description. Separate by \",\" and define alternatives by \"|\". Or write '/skip'");
+             SendMessage(subscriber, "Example: 'one, two|three' will find results where 'one' and 'two' are words in the description; but it will also find results with 'one' and 'three'.");*/
+
+            //Hack, Disable unused features
+            subscriber.State = InputState.WaitingForTitle;
+            SendMessage(subscriber, "Choose a unique title for your subscription.");
+            subscriber.IncompleteSubscription.InitialPull = false;
+            subscriber.IncompleteSubscription.IncludeKeywords = new List<string>();
+            subscriber.IncompleteSubscription.ExcludeKeywords = new List<string>();
+
+
         }
 
         private void AnalyzeInputIncludeKeywords(string messageText, Subscriber<TId> subscriber)
