@@ -132,11 +132,14 @@ namespace EbayKleinanzeigenCrawler.Jobs
                     if (firstRun && !subscription.InitialPull)
                     {
                         _logger.Information($"Not notifying about match because it's the first run: {result.Link}");
-                        continue;
+                        // continue; //removed and added else: fix skipping all if not requesting initial pull
                     }
+                    else
+                    {
 
-                    _logger.Information($"Found match: {result.Link}");
-                    _outgoingNotifications.NotifySubscribers(subscription, result); // TODO: If we have two Subscribers with the same subscription, this will alert both on run for Subscriber 1. On run for Subscriber 2, both will be alerted again.
+                        _logger.Information($"Found match: {result.Link}");
+                        _outgoingNotifications.NotifySubscribers(subscription, result); // TODO: If we have two Subscribers with the same subscription, this will alert both on run for Subscriber 1. On run for Subscriber 2, both will be alerted again.
+                    }
                 }
                 else
                 {
