@@ -70,7 +70,8 @@ namespace EbayKleinanzeigenCrawler.Manager
             }
             catch
             {
-                Logger.Error($"Telegram API Error");
+                Logger.Error($"Telegram API Error Picture, trying normal message");
+                SendMessage(subscriber, message, enablePreview: true, parseMode: ParseMode.Default);
             }
         }
 
