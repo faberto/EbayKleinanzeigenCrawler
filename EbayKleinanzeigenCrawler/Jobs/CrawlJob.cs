@@ -60,10 +60,23 @@ namespace EbayKleinanzeigenCrawler.Jobs
 
             // TODO: Only check additional pages, if it's the first run for the subscription OR the first run after application restart
             List<Uri> additionalPages = _parser.GetAdditionalPages(document); // TODO: Limit to n pages?
-            _logger.Information($"{additionalPages.Count} additional pages found");
+
+            bool scanFirstOnly = true;
+            if (scanFirstOnly)
+            {
+                _logger.Information($"Skipping {additionalPages.Count} additional pages");
+                additionalPages = new List<Uri>();
+            }
+            else
+            {
+                _logger.Information($"{additionalPages.Count} additional pages found");
+            }
+
+
+
 
             var newResults = new List<Result>();
-            
+
             for (int i = additionalPages.Count - 1; i >= 0; i--)
             {
                 Uri page = additionalPages.ElementAt(i);
@@ -75,7 +88,7 @@ namespace EbayKleinanzeigenCrawler.Jobs
 
                 List<Result> newLinksFromAdditionalPage = linksFromAdditionalPage.Where(l => !alreadyProcessedLinks.Contains(l.Link)).ToList();
                 _logger.Information($"{newLinksFromAdditionalPage.Count} links of them are new");
-                
+
                 // Arrange the oldest entries at the beginning
                 newLinksFromAdditionalPage.Reverse();
 
@@ -87,7 +100,7 @@ namespace EbayKleinanzeigenCrawler.Jobs
 
             List<Result> newResultsPage1 = results.Where(l => !alreadyProcessedLinks.Contains(l.Link)).ToList();
             _logger.Information($"{newResultsPage1.Count} links of them are new");
-            
+
             return newResults.Concat(newResultsPage1).ToList();
         }
 
@@ -121,7 +134,7 @@ namespace EbayKleinanzeigenCrawler.Jobs
                         _logger.Information($"Not notifying about match because it's the first run: {result.Link}");
                         continue;
                     }
-                    
+
                     _logger.Information($"Found match: {result.Link}");
                     _outgoingNotifications.NotifySubscribers(subscription, result); // TODO: If we have two Subscribers with the same subscription, this will alert both on run for Subscriber 1. On run for Subscriber 2, both will be alerted again.
                 }

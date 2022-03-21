@@ -1,12 +1,12 @@
-﻿using EbayKleinanzeigenCrawler.Interfaces;
-using EbayKleinanzeigenCrawler.Jobs;
-using EbayKleinanzeigenCrawler.Models;
-using Serilog;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using EbayKleinanzeigenCrawler.Interfaces;
+using EbayKleinanzeigenCrawler.Jobs;
+using EbayKleinanzeigenCrawler.Models;
+using Serilog;
 
 namespace EbayKleinanzeigenCrawler.Scheduler
 {
@@ -45,8 +45,8 @@ namespace EbayKleinanzeigenCrawler.Scheduler
                 }
                 SaveData();
 
-                _logger.Information("Processed all subscriptions. Waiting 5 minutes...");
-                Thread.Sleep(TimeSpan.FromMinutes(5));
+                _logger.Information("Processed all subscriptions. Waiting 1 minutes...");
+                Thread.Sleep(TimeSpan.FromMinutes(1));
             }
         }
 

@@ -1,10 +1,10 @@
-﻿using EbayKleinanzeigenCrawler.Interfaces;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using EbayKleinanzeigenCrawler.Interfaces;
 using EbayKleinanzeigenCrawler.Models;
 using HtmlAgilityPack;
 using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace EbayKleinanzeigenCrawler.Parser
 {
@@ -57,12 +57,15 @@ namespace EbayKleinanzeigenCrawler.Parser
             foreach (HtmlNode result in results)
             {
                 bool isProShopLink = result
-                    .Descendants("div")
-                    .Any(d => d.Attributes.Any(a => a.Value == "badge-hint-pro-small-srp"));
+                    .Descendants("i")
+                    .Any(d =>
+                    d.Attributes.Any(a => a.Value.Contains("icon-feature-topad"))
+                    );
 
                 if (isProShopLink)
                 {
                     // Filter out Pro-Shop links
+                    _logger.Information("Pro-Shop link found. Skipping");
                     continue;
                 }
 
@@ -78,7 +81,7 @@ namespace EbayKleinanzeigenCrawler.Parser
                     .Select(d => d.InnerText)
                     .SingleOrDefault()?
                     .Trim();
-                
+
                 string date = result
                     .SelectNodes("div/div/div[@class='aditem-main--top--right']")?
                     .Select(d => d.InnerText)
@@ -97,13 +100,13 @@ namespace EbayKleinanzeigenCrawler.Parser
                 {
                     _logger.Error("Could not parse date");
                 }
-                
+
                 if (price is null)
                 {
                     _logger.Error("Could not parse price");
                 }
 
-                yield return new Result { Link = link, CreationDate = date ?? "?" , Price = price ?? "?"};
+                yield return new Result { Link = link, CreationDate = date ?? "?", Price = price ?? "?" };
             }
         }
 
