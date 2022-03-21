@@ -101,7 +101,7 @@ namespace EbayKleinanzeigenCrawler.Jobs
             List<Result> newResultsPage1 = results.Where(l => !alreadyProcessedLinks.Contains(l.Link)).ToList();
             _logger.Information($"{newResultsPage1.Count} links of them are new");
 
-            return newResults.Concat(newResultsPage1).ToList();
+            return newResults.Concat(newResultsPage1).Reverse().ToList(); // Reverse to keep the oldest entries at the beginning
         }
 
         private void CheckForMatches(Subscription subscription, List<Uri> alreadyProcessedLinks, List<Result> newResults, bool firstRun)
