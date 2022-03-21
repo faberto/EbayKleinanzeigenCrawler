@@ -111,10 +111,11 @@ namespace EbayKleinanzeigenCrawler.Manager
             {
                 message += "\n\n" +
                            $"*Title*: {EscapeMarkdownV2Characters(subscription.Title)} \n" +
-                           $"*URL*: {EscapeMarkdownV2Characters(subscription.QueryUrl.ToString())} \n" +
-                           $"*Included keywords*: {EscapeMarkdownV2Characters(string.Join(", ", subscription.IncludeKeywords))} \n" +
-                           $"*Excluded keywords*: {EscapeMarkdownV2Characters(string.Join(", ", subscription.ExcludeKeywords))} \n" +
-                           $"*Enabled*: {subscription.Enabled}";
+                           $"*URL*: {EscapeMarkdownV2Characters(subscription.QueryUrl.ToString())} \n" //+
+                                                                                                       // $"*Included keywords*: {EscapeMarkdownV2Characters(string.Join(", ", subscription.IncludeKeywords))} \n" +
+                                                                                                       //  $"*Excluded keywords*: {EscapeMarkdownV2Characters(string.Join(", ", subscription.ExcludeKeywords))} \n" +
+                                                                                                       //$"*Enabled*: {subscription.Enabled}"
+                           ;
             }
 
             SendMessage(subscriber, message, enablePreview: false, parseMode: ParseMode.MarkdownV2);

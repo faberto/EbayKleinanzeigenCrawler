@@ -113,9 +113,17 @@ namespace EbayKleinanzeigenCrawler.Manager
                         StartAddingSubscription(subscriber);
                         return;
                     }
-                case InputState.Idle when messageText == "/delete":  // TODO: add edit mode
+                case InputState.Idle when messageText.StartsWith("/delete"):  // TODO: add edit mode
                     {
-                        DeleteAllSubscriptions(subscriber);
+                        if (messageText.Length > 8)
+                        {
+                            DeleteSubscriptions(subscriber, messageText.Substring(8));
+                        }
+                        else
+                        {
+                            SendMessage(subscriber, "Please enter a subscription name or part to delete");
+                        }
+
                         return;
                     }
                 case InputState.Idle when messageText == "/list":
@@ -178,11 +186,15 @@ namespace EbayKleinanzeigenCrawler.Manager
             subscriber.State = InputState.Idle;
         }
 
-        private void DeleteAllSubscriptions(Subscriber<TId> subscriber)
+        private void DeleteSubscriptions(Subscriber<TId> subscriber, string nameMustContainThis)
         {
-            subscriber.Subscriptions.Clear();
+            var removers = subscriber.Subscriptions.Where(s => s.Title.Contains(nameMustContainThis)).ToList();
+            foreach (var remover in removers)
+            {
+                subscriber.Subscriptions.Remove(remover);
+            }
             SaveData();
-            SendMessage(subscriber, "All your subscriptions were deleted");
+            SendMessage(subscriber, $"{removers.Count} subscriptions were deleted");
         }
 
         private void DisplayHelp(Subscriber<TId> subscriber)
