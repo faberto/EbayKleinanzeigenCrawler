@@ -11,6 +11,7 @@ namespace EbayKleinanzeigenCrawler
     {
         private static async Task Main(string[] args)
         {
+            DotNetEnv.Env.Load();
             AutofacConfig.IoCConfiguration();
 
             await using ILifetimeScope scope = AutofacConfig.Container.BeginLifetimeScope();
