@@ -200,7 +200,7 @@ namespace EbayKleinanzeigenCrawler.Manager
         private void DisplayHelp(Subscriber<TId> subscriber)
         {
             const string message = "Write /add to start the process of defining a subscription. \n" +
-                                   "Write /delete to delete all your subscriptions. \n" +
+                                   "Write /delete [Text] to subscriptions containing [Text]. \n" +
                                    "Write /list to view your current subscriptions \n" +
                                    "While you add a new subscription, you can write /cancel";
             SendMessage(subscriber, message);
