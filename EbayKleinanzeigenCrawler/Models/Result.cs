@@ -8,6 +8,8 @@ namespace EbayKleinanzeigenCrawler.Models
         public string CreationDate { get; set; }
         public string Price { get; set; }
 
+        public string PictureUrl { get; set; }
+
         public override bool Equals(object obj)
         {
             Result x = this;

@@ -1,10 +1,10 @@
-﻿using EbayKleinanzeigenCrawler.Infrastructure;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using EbayKleinanzeigenCrawler.Infrastructure;
 using EbayKleinanzeigenCrawler.Interfaces;
 using EbayKleinanzeigenCrawler.Models;
 using Serilog;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace EbayKleinanzeigenCrawler.Manager
 {
@@ -48,7 +48,14 @@ namespace EbayKleinanzeigenCrawler.Manager
             Console.Out.WriteLine(message);
             Console.ResetColor();
         }
-
+        protected override void SendPictureMessage(Subscriber<int> subscriber, string message, string pictureUrl)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.Out.WriteLine($"Picture Message for subscriber {subscriber.Id}:");
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Out.WriteLine(message);
+            Console.ResetColor();
+        }
         protected override void DisplaySubscriptionList(Subscriber<int> subscriber)
         {
             var message = "Your subscriptions:";

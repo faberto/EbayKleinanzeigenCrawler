@@ -1,12 +1,13 @@
-﻿using EbayKleinanzeigenCrawler.Interfaces;
+﻿using System;
+using System.Text.RegularExpressions;
+using EbayKleinanzeigenCrawler.Interfaces;
 using EbayKleinanzeigenCrawler.Models;
 using Serilog;
-using System;
-using System.Text.RegularExpressions;
 using Telegram.Bot;
 using Telegram.Bot.Args;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.InputFiles;
 
 namespace EbayKleinanzeigenCrawler.Manager
 {
@@ -54,6 +55,27 @@ namespace EbayKleinanzeigenCrawler.Manager
                 text: message,
                 parseMode: parseMode,
                 disableWebPagePreview: !enablePreview
+            ).Result;
+
+            if (result?.MessageId is null)
+            {
+                Logger.Error($"Error when sending message to Recipient: { subscriber.Id}, Message: \"{message}\"");
+            }
+            else
+            {
+                Logger.Information($"Recipient: {subscriber.Id}, Message: \"{message}\"");  // TODO: Add Admin-Notifications, e.g. for accumulated parsing failures
+            }
+        }
+
+        protected override void SendPictureMessage(Subscriber<long> subscriber, string message, string pictureUrl)
+        {
+            Message result = _botClient.SendPhotoAsync(
+                chatId: subscriber.Id,
+                caption: message,
+                photo: new InputOnlineFile(pictureUrl)
+
+
+
             ).Result;
 
             if (result?.MessageId is null)

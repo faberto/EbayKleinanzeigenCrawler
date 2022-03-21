@@ -88,6 +88,17 @@ namespace EbayKleinanzeigenCrawler.Parser
                     .SingleOrDefault()?
                     .Trim();
 
+                string pictureUrl = result
+                    .SelectNodes("div[@class='aditem-image']//a//div")?
+                    .Select(n => n.Attributes.SingleOrDefault(a => a.Name == "data-imgsrc"))
+                    .Where(l => l is not null)
+                    .Select(l => l.Value.ToString())
+                    .SingleOrDefault();
+
+                //_logger.Information($"Found pictureUrl: {pictureUrl}");
+
+
+
                 // TODO: Write some error statistics and notify admin about too many errors to detect changed HTML syntax
 
                 if (link is null)
@@ -106,7 +117,7 @@ namespace EbayKleinanzeigenCrawler.Parser
                     _logger.Error("Could not parse price");
                 }
 
-                yield return new Result { Link = link, CreationDate = date ?? "?", Price = price ?? "?" };
+                yield return new Result { Link = link, CreationDate = date ?? "?", Price = price ?? "?", PictureUrl = pictureUrl };
             }
         }
 

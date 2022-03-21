@@ -1,11 +1,11 @@
-﻿using EbayKleinanzeigenCrawler.Interfaces;
-using EbayKleinanzeigenCrawler.Models;
-using Serilog;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using EbayKleinanzeigenCrawler.Interfaces;
+using EbayKleinanzeigenCrawler.Models;
+using Serilog;
 
 namespace EbayKleinanzeigenCrawler.Manager
 {
@@ -18,7 +18,7 @@ namespace EbayKleinanzeigenCrawler.Manager
         protected StatefulManagerBase(IDataStorage dataStorage, ILogger logger)
         {
             Directory.CreateDirectory("data");
-            
+
             DataStorage = dataStorage;
             Logger = logger;
             SubscriberList = new ConcurrentBag<Subscriber<TId>>();
@@ -26,6 +26,7 @@ namespace EbayKleinanzeigenCrawler.Manager
         }
 
         protected abstract void SendMessage(Subscriber<TId> subscriber, string message);
+        protected abstract void SendPictureMessage(Subscriber<TId> subscriber, string message, string pictureUrl);
 
         protected abstract void DisplaySubscriptionList(Subscriber<TId> subscriber);
 
@@ -73,9 +74,19 @@ namespace EbayKleinanzeigenCrawler.Manager
                 // As it is possible that multiple subscribers have the same subscription, this subscription could be an equal one from another subscriber
                 Subscription exactSubscription = subscriber.Subscriptions.Single(s => s.Equals(subscription) && s.Enabled);
 
-                string message = $"New result: {newResult.Link} \n" +                       // TODO: display price
+                string message = $"{newResult.Link} \n" +                       // TODO: display price
                                  $"{exactSubscription.Title} - {newResult.CreationDate} - {newResult.Price}";   // TODO: Amend Title of already sent notification to avoid duplicate notifications for two subscriptions
-                SendMessage(subscriber, message);
+                if (string.IsNullOrEmpty(newResult.PictureUrl))
+                {
+                    //Logger.Information($"Sending NORMAL message to {subscriber.Id}");
+                    SendMessage(subscriber, message);
+                }
+                else
+                {
+                    //Logger.Information($"Sending PICTURE message to {subscriber.Id}");
+                    SendPictureMessage(subscriber, message, newResult.PictureUrl);
+                }
+
             }
         }
 
