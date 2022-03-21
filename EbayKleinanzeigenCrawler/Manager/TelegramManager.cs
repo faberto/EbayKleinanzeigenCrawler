@@ -50,26 +50,35 @@ namespace EbayKleinanzeigenCrawler.Manager
 
         private void SendMessage(Subscriber<long> subscriber, string message, bool enablePreview, ParseMode parseMode)
         {
-            Message result = _botClient.SendTextMessageAsync(
-                chatId: subscriber.Id,
-                text: message,
-                parseMode: parseMode,
-                disableWebPagePreview: !enablePreview
-            ).Result;
+            try
+            {
+                Message result = _botClient.SendTextMessageAsync(
+                  chatId: subscriber.Id,
+                  text: message,
+                  parseMode: parseMode,
+                  disableWebPagePreview: !enablePreview
+              ).Result;
 
-            if (result?.MessageId is null)
-            {
-                Logger.Error($"Error when sending message to Recipient: { subscriber.Id}, Message: \"{message}\"");
+                if (result?.MessageId is null)
+                {
+                    Logger.Error($"Error when sending message to Recipient: { subscriber.Id}, Message: \"{message}\"");
+                }
+                else
+                {
+                    Logger.Information($"Recipient: {subscriber.Id}, Message: \"{message}\"");  // TODO: Add Admin-Notifications, e.g. for accumulated parsing failures
+                }
             }
-            else
+            catch
             {
-                Logger.Information($"Recipient: {subscriber.Id}, Message: \"{message}\"");  // TODO: Add Admin-Notifications, e.g. for accumulated parsing failures
+                Logger.Error($"Telegram API Error");
             }
         }
 
         protected override void SendPictureMessage(Subscriber<long> subscriber, string message, string pictureUrl)
         {
-            Message result = _botClient.SendPhotoAsync(
+            try
+            {
+                Message result = _botClient.SendPhotoAsync(
                 chatId: subscriber.Id,
                 caption: message,
                 photo: new InputOnlineFile(pictureUrl)
@@ -78,14 +87,20 @@ namespace EbayKleinanzeigenCrawler.Manager
 
             ).Result;
 
-            if (result?.MessageId is null)
-            {
-                Logger.Error($"Error when sending message to Recipient: { subscriber.Id}, Message: \"{message}\"");
+                if (result?.MessageId is null)
+                {
+                    Logger.Error($"Error when sending message to Recipient: { subscriber.Id}, Message: \"{message}\"");
+                }
+                else
+                {
+                    Logger.Information($"Recipient: {subscriber.Id}, Message: \"{message}\"");  // TODO: Add Admin-Notifications, e.g. for accumulated parsing failures
+                }
             }
-            else
+            catch
             {
-                Logger.Information($"Recipient: {subscriber.Id}, Message: \"{message}\"");  // TODO: Add Admin-Notifications, e.g. for accumulated parsing failures
+                Logger.Error($"Telegram API Error");
             }
+
         }
 
         protected override void DisplaySubscriptionList(Subscriber<long> subscriber)

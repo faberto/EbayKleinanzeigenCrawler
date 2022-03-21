@@ -78,12 +78,12 @@ namespace EbayKleinanzeigenCrawler.Manager
                                  $"{exactSubscription.Title} - {newResult.CreationDate} - {newResult.Price}";   // TODO: Amend Title of already sent notification to avoid duplicate notifications for two subscriptions
                 if (string.IsNullOrEmpty(newResult.PictureUrl))
                 {
-                    //Logger.Information($"Sending NORMAL message to {subscriber.Id}");
+                    Logger.Information($"Sending NORMAL message to {subscriber.Id}");
                     SendMessage(subscriber, message);
                 }
                 else
                 {
-                    //Logger.Information($"Sending PICTURE message to {subscriber.Id}");
+                    Logger.Information($"Sending PICTURE message to {subscriber.Id}");
                     SendPictureMessage(subscriber, message, newResult.PictureUrl);
                 }
 
